@@ -1,13 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash,check_password_hash
-from flask_login import LoginManager,UserMixin
 
-gestor = LoginManager()
 db = SQLAlchemy()
-
-@gestor.user_loader
-def load_user(matricula):
-    return Maestro.query.get(matricula)
 
 class Alumno(db.Model):
     __tablename__='Alumno'
@@ -16,13 +9,17 @@ class Alumno(db.Model):
     ape_pa = db.Column(db.Text)
     ape_ma = db.Column(db.Text)
     fecha_nacimiento = db.Column(db.Date)
+    grupo = db.Column(db.String(2))
+    asistencia = db.relationship('Asistencia',backref='asistencias',lazy='dynamic')
 
-    def __init__(self,matricula,nombre,ape_pa,ape_ma,fecha_nacimiento):
+    def __init__(self,matricula,nombre,ape_pa,ape_ma,fecha_nacimiento, grupo):
         self.matricula = matricula
         self.nombre = nombre
         self.ape_pa = ape_pa
         self.ape_ma = ape_ma
         self.fecha_nacimiento = fecha_nacimiento
+        self.grupo = grupo
+
 
 class Maestro(db.Model):
     __tablename__='Maestro'
@@ -31,38 +28,26 @@ class Maestro(db.Model):
     ape_pa = db.Column(db.Text)
     ape_ma = db.Column(db.Text)
     fecha_nacimiento = db.Column(db.Date)
-    password = db.Column(db.String(16))
-    imparte = db.relationship('Imparte',backref='mmaestro',lazy='dynamic')
+    grupo = db.Column(db.String(2))
     
-    def __init__(self,matricula,nombre,ape_pa,ape_ma,fecha_nacimiento):
+    def __init__(self,matricula,nombre,ape_pa,ape_ma,fecha_nacimiento,grupo):
         self.matricula = matricula
         self.nombre = nombre
         self.ape_pa = ape_pa
         self.ape_ma = ape_ma
         self.fecha_nacimiento = fecha_nacimiento
+        self.grupo = grupo
 
-    def verificar_clave(self,password):
-        return check_password_hash(self.password,password)
-    
-    def get_id(self):
-        return self.matricula
-
-class Materias(db.Model):
-    __tablename__='Materias'
-    codigo = db.Column(db.String(8),primary_key=True)
-    nombre = db.Column(db.Text)
-    imparte = db.relationship('Imparte',backref='materias',lazy='dynamic')
-
-    def __init__(self,nombre):
-        self.nombre = nombre
-
-class Imparte(db.Model):
-    __tablename__='Imparte'
+class Asistencia(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    id_maestro = db.Column(db.String(8),db.ForeignKey('Maestro.matricula'))
-    id_materia = db.Column(db.String(8),db.ForeignKey('Materias.codigo'))
+    fecha = db.Column(db.Date)
+    idalumno = db.Column(db.String(8),db.ForeignKey('Alumno.matricula'),name='asitencia')
+    asistencia = db.Column(db.Boolean)
 
-    def __init__(self,id_maestro,id_materia):
-        self.id_maestro = id_maestro
-        self.id_materia = id_materia
-        
+    def __init__(self,fecha,idalumno,asistencia):
+       self.fecha = fecha
+       self.idalumno = idalumno
+       self.asistencia = asistencia
+
+
+

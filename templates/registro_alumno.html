@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Docente</title>
+    <title>Registro de Alumno</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
         <!-- Formulario -->
         <div class="form-card">
-            <h2>Registro de Docente</h2>
+            <h2>Registro de Alumno</h2>
            
             <form method="post">
-                {{ maestro.hidden_tag() }}
+                {{ alumno.hidden_tag() }}
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    {{ maestro.nombre }}
+                    {{ alumno.nombre }}
                 </div>
                 <div class="form-group">
                     <label for="ape_pa">Apellido Paterno</label>
-                    {{ maestro. ape_pa }}
+                    {{ alumno. ape_pa }}
                 </div>
                 <div class="form-group">
                     <label for="ape_ma">Apellido Materno</label>
-                    {{ maestro. ape_ma }}
+                    {{ alumno. ape_ma }}
                 </div>
                 <div class="form-group">
                     <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                    {{ maestro.fecha }}
+                    {{ alumno.fecha }}
                 </div>
                 <div class="form-group">
                     <label for="grupo">Grupo</label>
-                    {{ maestro.grupo }}
+                    {{ alumno.grupo }}
                 </div>
                 
-                {{ maestro.boton }}
+                {{ alumno.boton }}
             </form>
         </div>
 
         <!-- Tabla -->
         <div class="table-card">
-            <h2>Maestros Registrados</h2>
+            <h2>Alumnos Registrados</h2>
             <table>
                 <thead>
                     <tr>
@@ -54,14 +54,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for maestro in lista_maestro %}
+                    {% for alumno in lista_alumnos %}
                     <tr>
-                        <td>{{ maestro.matricula }}</td>
-                        <td>{{ maestro.nombre }}</td>
-                        <td>{{ maestro.ape_pa }}</td>
-                        <td>{{ maestro.ape_ma }}</td>
-                        <td>{{ maestro.fecha_nacimiento }}</td>
-                        <td>Grupo {{ maestro.grupo }}</td>
+                        <td>{{ alumno.matricula }}</td>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.ape_pa }}</td>
+                        <td>{{ alumno.ape_ma }}</td>
+                        <td>{{ alumno.fecha_nacimiento }}</td>
+                        <td>Grupo {{ alumno.grupo }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
