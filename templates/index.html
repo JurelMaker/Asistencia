@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Ingresa tu matricula</h2>
+   
+    <form method="post">
+        {{ matricula.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="nombre">Matricula</label>
+            {{ matricula.matricula }} 
+        </div><br>
+
+        <div>{{ matricula.boton }}</div>
+</div>
+        {% if enviado %}
+        <div class="table-card">
+            <h2>Alumnos Registrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Grupo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for alumno in alumno_grupo %}
+                    <tr>
+                        <td>{{ alumno.matricula }}</td>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.ape_pa }}</td>
+                        <td>{{ alumno.ape_ma }}</td>
+                        <td>{{ alumno.fecha_nacimiento }}</td>
+                        <td>Grupo {{ alumno.grupo }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+{% endblock %}

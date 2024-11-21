@@ -31,3 +31,9 @@ class RegistroDocente(FlaskForm):
     grupo = SelectField('Grupo', choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')], validators=[DataRequired()])
     
     boton = SubmitField('Registrar',render_kw={"class":"submit-btn"})
+
+class Entrada(FlaskForm):
+    matricula = StringField('Nombre',validators=[DataRequired()]
+                        ,render_kw={"type": "text"})
+
+    boton = SubmitField('Registrar',render_kw={"class":"submit-btn"})

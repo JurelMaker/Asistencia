@@ -2,7 +2,7 @@ from flask import Flask,render_template,redirect,url_for
 from models.models import Maestro,db,Alumno
 from flask_migrate import Migrate
 import os 
-from formularios.forms import RegistroAlumno,RegistroDocente
+from formularios.forms import RegistroAlumno,RegistroDocente,Entrada
 from funciones.matricula import matricula
 
 app = Flask(__name__)
@@ -19,9 +19,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 Migrate(app,db)
 
-@app.route('/')
+@app.route('/',methods=['GET','POST'])
 def index():
-    pass
+    matriculaEntrada = Entrada()
+    if matriculaEntrada.validate_on_submit():
+        matricula_maestro = matriculaEntrada.matricula.data
+        buscar = Maestro.query.filter(Maestro.matricula == matricula_maestro).first()
+        if buscar:
+            alumno_grupo = Alumno.query.filter(Alumno.grupo == buscar.grupo).all()
+            
+            return render_template('index.html',alumno_grupo = alumno_grupo,matricula = matriculaEntrada,enviado = True)
+    
+    return render_template('index.html',matricula = matriculaEntrada,enviado = False)
 
 @app.route('/maestro',methods=['GET','POST'])
 def registro_maestro():
@@ -56,5 +65,12 @@ def registro_alumno():
 
     return render_template('registro_alumno.html',alumno = alumno,lista_alumnos = lista_alumnos)
 
+@app.route('/asistencia')
+def asistencia():
+     alumno_grupo = Alumno.query.filter(Alumno.grupo == Maestro.grupo)
+
+     return alumno_grupo
+
+    
 if __name__== '__main__':
     app.run(debug=True)
