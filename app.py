@@ -1,9 +1,10 @@
-from flask import Flask,render_template,redirect,url_for
-from models.models import Maestro,db,Alumno
+from flask import Flask,render_template,redirect,url_for,request
+from models.models import Maestro,db,Alumno,Asistencia
 from flask_migrate import Migrate
 import os 
 from formularios.forms import RegistroAlumno,RegistroDocente,Entrada
 from funciones.matricula import matricula
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -28,9 +29,9 @@ def index():
         if buscar:
             alumno_grupo = Alumno.query.filter(Alumno.grupo == buscar.grupo).all()
             
-            return render_template('index.html',alumno_grupo = alumno_grupo,matricula = matriculaEntrada,enviado = True)
+            return render_template('index.html',alumno_grupo = alumno_grupo,matricula = matriculaEntrada)
     
-    return render_template('index.html',matricula = matriculaEntrada,enviado = False)
+    return render_template('index.html',matricula = matriculaEntrada)
 
 @app.route('/maestro',methods=['GET','POST'])
 def registro_maestro():
@@ -65,11 +66,15 @@ def registro_alumno():
 
     return render_template('registro_alumno.html',alumno = alumno,lista_alumnos = lista_alumnos)
 
-@app.route('/asistencia')
+@app.route('/asistencia',methods=['POST'])
 def asistencia():
-     alumno_grupo = Alumno.query.filter(Alumno.grupo == Maestro.grupo)
+    fecha = datetime.now().date()
+    selccionados = request.form.getlist('opciones')
+    alumno_asistencia = Asistencia(fecha,selccionados,True)
+    db.session.add(alumno_asistencia)
+    db.session.commit()
 
-     return alumno_grupo
+    return redirect(url_for('index'))
 
     
 if __name__== '__main__':

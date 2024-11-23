@@ -37,3 +37,6 @@ class Entrada(FlaskForm):
                         ,render_kw={"type": "text"})
 
     boton = SubmitField('Registrar',render_kw={"class":"submit-btn"})
+
+class Enviar(FlaskForm):
+    enviar = SubmitField('Enviar',render_kw={"class":"submit-btn"})
