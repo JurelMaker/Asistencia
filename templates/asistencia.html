@@ -1,3 +1,42 @@
-<h1>Hola has entrado correctamente</h1>
+{% extends "base.html" %}
 
-<p>{{ matricula_grupo }}</p>
+
+{% block content %}
+
+<div class="table-card">
+    <h2>Alumnos Registrados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Asistencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for alumno in alumno_grupo %}
+            <tr>
+                <td>{{ alumno.matricula }}</td>
+                <td>{{ alumno.nombre }}</td>
+                <td>{{ alumno.ape_pa }}</td>
+                <td>{{ alumno.ape_ma }}</td>
+                <td>
+                    
+                     <form method="post">
+                        <button class="btn btn-primary btn-sm" type="submit" value="{{ alumno.matricula }}" 
+                        name="id">Asistencia</button>
+                     </form>
+                     
+                </td>
+                
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

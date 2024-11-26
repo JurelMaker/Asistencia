@@ -1,8 +1,8 @@
-from flask import Flask,render_template,redirect,url_for,request
+from flask import Flask,render_template,redirect,url_for,request,session
 from models.models import Maestro,db,Alumno,Asistencia
 from flask_migrate import Migrate
 import os 
-from formularios.forms import RegistroAlumno,RegistroDocente,Entrada
+from formularios.forms import RegistroAlumno,RegistroDocente,Entrada,Enviar
 from funciones.matricula import matricula
 from datetime import datetime
 
@@ -25,12 +25,12 @@ def index():
     matriculaEntrada = Entrada()
     if matriculaEntrada.validate_on_submit():
         matricula_maestro = matriculaEntrada.matricula.data
-        buscar = Maestro.query.filter(Maestro.matricula == matricula_maestro).first()
-        if buscar:
-            alumno_grupo = Alumno.query.filter(Alumno.grupo == buscar.grupo).all()
+        grupo = Maestro.query.filter(Maestro.matricula == matricula_maestro).first()
+        if grupo: 
+            session['maestro'] = matricula_maestro
             
-            return render_template('index.html',alumno_grupo = alumno_grupo,matricula = matriculaEntrada)
-    
+            return redirect(url_for('asistencias'))
+       
     return render_template('index.html',matricula = matriculaEntrada)
 
 @app.route('/maestro',methods=['GET','POST'])
@@ -45,8 +45,6 @@ def registro_maestro():
         return redirect(url_for('registro_maestro'))
     
     lista_maestro = Maestro.query.all()
-
-
 
     return render_template('registro_maestro.html',maestro = maestro,lista_maestro = lista_maestro)
 
@@ -66,16 +64,19 @@ def registro_alumno():
 
     return render_template('registro_alumno.html',alumno = alumno,lista_alumnos = lista_alumnos)
 
-@app.route('/asistencia',methods=['POST'])
-def asistencia():
+@app.route('/asistencia',methods=['GET','POST'])
+def asistencias():
+    matricula_maestro = session.get('maestro')
+    maestro = Maestro.query.get(matricula_maestro)
+    alumno_grupo = Alumno.query.filter(Alumno.grupo ==  maestro.grupo).all()
+    
+   
     fecha = datetime.now().date()
-    selccionados = request.form.getlist('opciones')
-    alumno_asistencia = Asistencia(fecha,selccionados,True)
-    db.session.add(alumno_asistencia)
+    matricula_alumno = request.form.get('id')
+    asistencia_alumno = Asistencia(fecha,matricula_alumno,True)
+    db.session.add(asistencia_alumno)
     db.session.commit()
 
-    return redirect(url_for('index'))
-
-    
+    return render_template('asistencia.html',alumno_grupo = alumno_grupo)
 if __name__== '__main__':
     app.run(debug=True)
