@@ -70,13 +70,17 @@ def asistencias():
     maestro = Maestro.query.get(matricula_maestro)
     alumno_grupo = Alumno.query.filter(Alumno.grupo ==  maestro.grupo).all()
     
-   
-    fecha = datetime.now().date()
-    matricula_alumno = request.form.get('id')
-    asistencia_alumno = Asistencia(fecha,matricula_alumno,True)
-    db.session.add(asistencia_alumno)
-    db.session.commit()
+    if request.method == 'POST':
+            fecha = datetime.now().date()
+            matricula_alumno = request.form.get('id')
+            asistencia_alumno = Asistencia(fecha,matricula_alumno,True)
+            db.session.add(asistencia_alumno)
+            db.session.commit()
 
+            return redirect(url_for('asistencias'))
+
+            
     return render_template('asistencia.html',alumno_grupo = alumno_grupo)
+
 if __name__== '__main__':
     app.run(debug=True)
